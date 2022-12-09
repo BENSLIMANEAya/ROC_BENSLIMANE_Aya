@@ -4,9 +4,16 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/C:/GitHub/ROC_BENSLIMANE_Aya/Embedded/Robot_Benslimane.X/main.c</file>
+            <file>file:/C:/GitHub/ROC_BENSLIMANE_Aya/Embedded/Robot_Benslimane.X/timer.c</file>
             <file>file:/C:/GitHub/ROC_BENSLIMANE_Aya/Embedded/Robot_Benslimane.X/ChipConfig.c</file>
-            <file>file:/C:/GitHub/ROC_BENSLIMANE_Aya/Embedded/Robot_Benslimane.X/ChipConfig.h</file>
+            <file>file:/C:/GitHub/ROC_BENSLIMANE_Aya/Embedded/Robot_Benslimane.X/Robot.h</file>
+            <file>file:/C:/GitHub/ROC_BENSLIMANE_Aya/Embedded/Robot_Benslimane.X/ToolBox.c</file>
             <file>file:/C:/GitHub/ROC_BENSLIMANE_Aya/Embedded/Robot_Benslimane.X/IO.c</file>
+            <file>file:/C:/GitHub/ROC_BENSLIMANE_Aya/Embedded/Robot_Benslimane.X/timer.h</file>
+            <file>file:/C:/GitHub/ROC_BENSLIMANE_Aya/Embedded/Robot_Benslimane.X/ToolBox.h</file>
+            <file>file:/C:/GitHub/ROC_BENSLIMANE_Aya/Embedded/Robot_Benslimane.X/Robot.c</file>
+            <file>file:/C:/GitHub/ROC_BENSLIMANE_Aya/Embedded/Robot_Benslimane.X/PWM.c</file>
+            <file>file:/C:/GitHub/ROC_BENSLIMANE_Aya/Embedded/Robot_Benslimane.X/PWM.h</file>
             <file>file:/C:/GitHub/ROC_BENSLIMANE_Aya/Embedded/Robot_Benslimane.X/IO.h</file>
         </group>
     </open-files>
