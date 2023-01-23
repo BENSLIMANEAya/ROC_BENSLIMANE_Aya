@@ -1,4 +1,5 @@
-#include "ToolBox.h"
+#include "Toolbox.h"
+#define PI  3.141592653589793
 float Abs(float value)
 {
 if (value >= 0)

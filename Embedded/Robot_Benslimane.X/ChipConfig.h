@@ -1,4 +1,11 @@
 /* 
+ * File:   ChipConfig.h
+ * Author: Table2
+ *
+ * Created on 16 novembre 2022, 10:03
+ */
+
+/* 
 
  * File:   ChipConfig.h
 
@@ -21,5 +28,3 @@ void InitOscillator();
 
 
 #endif	/* CHIPCONFIG_H */
-
-
