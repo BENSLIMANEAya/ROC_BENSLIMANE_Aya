@@ -1,6 +1,6 @@
-
 #include <xc.h>
 #include "ADC.h"
+#include "main.h"
 
 
 unsigned char ADCResultIndex = 0;
@@ -14,7 +14,7 @@ void InitADC1(void)
 {
 //cf. ADC Reference Manual page 47
 
-//Configuration en mode 12 bits mono canal ADC avec conversions successives sur 4 entrées
+//Configuration en mode 12 bits mono canal ADC avec conversions successives sur 4 entrÃ©es
 /************************************************************/
 //AD1CON1
 /************************************************************/
@@ -48,7 +48,7 @@ AD1CON4bits.ADDMAEN = 0; // DMA is not used
 /************************************************************/
 //Configuration des ports
 /************************************************************/
-//ADC utilisés : 16(G9)-11(C11)-6(C0)
+//ADC utilisÃ©s : 16(G9)-11(C11)-6(C0)
 ANSELCbits.ANSC0 = 1;
 ANSELCbits.ANSC11 = 1;
 ANSELGbits.ANSG9 = 1;
@@ -95,3 +95,8 @@ void ADCClearConversionFinishedFlag(void)
 {
 ADCConversionFinishedFlag = 0;
 }
+
+
+
+
+
