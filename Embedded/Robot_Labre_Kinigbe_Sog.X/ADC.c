@@ -1,23 +1,29 @@
 #include <xc.h>
-#include "adc.h"
+#include "ADC.h"
+#include "main.h"
+
+
 unsigned char ADCResultIndex = 0;
 static unsigned int ADCResult[4];
 unsigned char ADCConversionFinishedFlag;
+
 /****************************************************************************************************/
 // Configuration ADC
 /****************************************************************************************************/
 void InitADC1(void)
 {
 //cf. ADC Reference Manual page 47
-//Configuration en mode 12 bits mono canal ADC avec conversions successives sur 4 Èentres
+
+//Configuration en mode 12 bits mono canal ADC avec conversions successives sur 4 entr√©es
 /************************************************************/
 //AD1CON1
 /************************************************************/
-AD1CON1bits.ADON = 0; // ADC module OFF - pendant la config
-AD1CON1bits.AD12B = 1; // 0 : 10bits - 1 : 12bits
+AD1CON1bits.ADON = 0; // ADC module OFF ? pendant la config
+AD1CON1bits.AD12B = 1; // 0 : 10bits ? 1 : 12bits
 AD1CON1bits.FORM = 0b00; // 00 = Integer (DOUT = 0000 dddd dddd dddd)
 AD1CON1bits.ASAM = 0; // 0 = Sampling begins when SAMP bit is set
 AD1CON1bits.SSRC = 0b111; // 111 = Internal counter ends sampling and starts conversion (auto-convert)
+
 /************************************************************/
 //AD1CON2
 /************************************************************/
@@ -33,23 +39,28 @@ AD1CON2bits.BUFM = 0;
 AD1CON3bits.ADRC = 0; // ADC Clock is derived from Systems Clock
 AD1CON3bits.ADCS = 15; // ADC Conversion Clock TAD = TCY * (ADCS + 1)
 AD1CON3bits.SAMC = 15; // Auto Sample Time
+
 /************************************************************/
 //AD1CON4
 /************************************************************/
 AD1CON4bits.ADDMAEN = 0; // DMA is not used
+
 /************************************************************/
 //Configuration des ports
 /************************************************************/
-//ADC Èutiliss : 16(G9)-11(C11)-6(C0)
+//ADC utilis√©s : 16(G9)-11(C11)-6(C0)
 ANSELCbits.ANSC0 = 1;
 ANSELCbits.ANSC11 = 1;
 ANSELGbits.ANSG9 = 1;
+
 AD1CSSLbits.CSS6=1; // Enable AN6 for scan
 AD1CSSLbits.CSS11=1; // Enable AN11 for scan
 AD1CSSHbits.CSS16=1; // Enable AN16 for scan
+
 /* Assign MUXA inputs */
 AD1CHS0bits.CH0SA = 0;// CH0SA bits ignored for CH0 +ve input selection
 AD1CHS0bits.CH0NA = 0;// Select VREF- for CH0 -ve inpu
+
 IFS0bits.AD1IF = 0; // Clear the A/D interrupt flag bit
 IEC0bits.AD1IE = 1; // Enable A/D interrupt
 AD1CON1bits.ADON = 1; // Turn on the A/D converter
@@ -84,4 +95,5 @@ void ADCClearConversionFinishedFlag(void)
 {
 ADCConversionFinishedFlag = 0;
 }
+
 
