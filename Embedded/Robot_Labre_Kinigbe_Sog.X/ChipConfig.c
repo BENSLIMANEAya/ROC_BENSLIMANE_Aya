@@ -1,4 +1,5 @@
 #include <xc.h>
+#include "main.h"
 
 // DSPIC33EP512GM306 Configuration Bit Settings
 
@@ -53,3 +54,4 @@ void InitOscillator()
     // Wait for PLL to lock
     while (OSCCONbits.LOCK != 1);
 }
+
