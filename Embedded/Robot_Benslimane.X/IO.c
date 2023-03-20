@@ -1,22 +1,13 @@
-/*
-
- * File:   IO.c
-
- */
-
-
-
 #include <xc.h>
-
 #include "IO.h"
-
+#include "main.h"
 
 
 void InitIO()
 
 {
 
-    // IMPORTANT : désactiver les entrées analogiques, sinon on perd les entrées numériques
+    // IMPORTANT : dÃ©sactiver les entrÃ©es analogiques, sinon on perd les entrÃ©es numÃ©riques
 
     ANSELA = 0; // 0 desactive
 
@@ -55,7 +46,9 @@ void InitIO()
     _TRISC6 = 0;
     
     _TRISC7 = 0;  
-    //********** Configuration des entrées : _TRISxx = 1 ********************************   
+    //********** Configuration des entrÃ©es : _TRISxx = 1 ********************************
+  
+   
 
     
 
