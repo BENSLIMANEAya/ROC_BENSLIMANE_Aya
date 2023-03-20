@@ -1,10 +1,3 @@
-/* 
- * File:   PWM.h
- * Author: Table2
- *
- * Created on 7 décembre 2022, 13:54
- */
-
 #ifndef PWM_H
 #define	PWM_H
 
