@@ -2,7 +2,7 @@
  * File:   ADC.h
  * Author: Table2
  *
- * Created on 14 dÃ©cembre 2022, 15:32
+ * Created on 14 décembre 2022, 15:32
  */
 
 #ifndef ADC_H
@@ -22,4 +22,6 @@ void ADCClearConversionFinishedFlag(void);
 
 
 #endif	/* ADC_H */
+
+
 

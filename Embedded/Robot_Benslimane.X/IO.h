@@ -6,7 +6,7 @@
 #define LED_BLEUE _LATG7
 #define LED_BLANCHE _LATG6
 
-//DÃ©finitions des pins pour les hacheurs moteurs
+//Définitions des pins pour les hacheurs moteurs
 #define MOTEUR1_IN1 _LATB14
 #define MOTEUR1_IN2 _LATB15
 
@@ -15,14 +15,14 @@
 
 
 
-//Configuration spÃ©cifique du moteur gauche
+//Configuration spécifique du moteur gauche
 #define MOTEUR_GAUCHE_H_IO_OUTPUT MOTEUR1_IN1
 #define MOTEUR_GAUCHE_L_IO_OUTPUT MOTEUR1_IN2
 #define MOTEUR_GAUCHE_L_PWM_ENABLE IOCON1bits.PENL
 #define MOTEUR_GAUCHE_H_PWM_ENABLE IOCON1bits.PENH
 #define MOTEUR_GAUCHE_DUTY_CYCLE PDC1
 
-//Configuration spÃ©cifique du moteur droite
+//Configuration spécifique du moteur droite
 #define MOTEUR_DROIT_H_IO_OUTPUT MOTEUR6_IN1
 #define MOTEUR_DROIT_L_IO_OUTPUT MOTEUR6_IN2
 #define MOTEUR_DROIT_L_PWM_ENABLE IOCON6bits.PENL
@@ -33,5 +33,3 @@
 void InitIO();
 
 #endif /* IO_H */
-
-

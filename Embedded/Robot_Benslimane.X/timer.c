@@ -56,7 +56,7 @@ void InitTimer1(void) {
     //00 = 1:1 prescale value
     T1CONbits.TCS = 0; //clock source = internal clock
     //PR1 = 40000000 / 64 / 50;
-    SetFreqTimer1(2.5);
+    SetFreqTimer1(250);
     IFS0bits.T1IF = 0; // Clear Timer Interrupt Flag
     IEC0bits.T1IE = 1; // Enable Timer interrupt
     T1CONbits.TON = 1; // Enable Timer
@@ -137,14 +137,14 @@ T4CONbits.TCKPS = 0b10; //10 = 1:64 prescaler value
 if(FCY /freq / 64 > 65535)
 {
 T4CONbits.TCKPS = 0b11; //11 = 1:256 prescaler value
-PR1 = (int)(FCY / freq / 256);
+PR4 = (int)(FCY / freq / 256);
 }
 else
-PR1 = (int)(FCY / freq / 64);
+PR4 = (int)(FCY / freq / 64);
 }
 else
-PR1 = (int)(FCY / freq / 8);
+PR4 = (int)(FCY / freq / 8);
 }
 else
-PR1 = (int)(FCY / freq);
+PR4 = (int)(FCY / freq);
 }

@@ -7,7 +7,7 @@ void InitIO()
 
 {
 
-    // IMPORTANT : dÃ©sactiver les entrÃ©es analogiques, sinon on perd les entrÃ©es numÃ©riques
+    // IMPORTANT : désactiver les entrées analogiques, sinon on perd les entrées numériques
 
     ANSELA = 0; // 0 desactive
 
@@ -46,10 +46,12 @@ void InitIO()
     _TRISC6 = 0;
     
     _TRISC7 = 0;  
-    //********** Configuration des entrÃ©es : _TRISxx = 1 ********************************
+    //********** Configuration des entrées : _TRISxx = 1 ********************************
   
    
 
     
 
 }
+
+

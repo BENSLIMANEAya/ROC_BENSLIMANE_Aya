@@ -20,7 +20,7 @@ int main(void) {
     InitOscillator();
 
     /****************************************************************************************************/
-    // Configuration des entr√©es sorties
+    // Configuration des entrÈes sorties
     /****************************************************************************************************/
     InitIO();
 
@@ -33,9 +33,7 @@ int main(void) {
     
     /*
     LED_BLANCHE = 1;
-    LED_BLEUE = 1;
-    LED_ORANGE = 1;
-    */
+    LED_BLEUE = 1;  
     
 
 
@@ -159,14 +157,14 @@ break;
 void SetNextRobotStateInAutomaticMode()
 {
 unsigned char positionObstacle = PAS_D_OBSTACLE;
-//√©Dtermination de la position des obstacles en fonction des √©√©√®tlmtres
+//ÈDtermination de la position des obstacles en fonction des ÈÈËtlmtres
 if ( robotState.distanceTelemetreDroit < 30 &&
 robotState.distanceTelemetreCentre > 20 &&
-robotState.distanceTelemetreGauche > 30) //Obstacle √†droite
+robotState.distanceTelemetreGauche > 30) //Obstacle ‡droite
 positionObstacle = OBSTACLE_A_DROITE;
 else if(robotState.distanceTelemetreDroit > 30 &&
 robotState.distanceTelemetreCentre > 20 &&
-robotState.distanceTelemetreGauche < 30) //Obstacle √†gauche
+robotState.distanceTelemetreGauche < 30) //Obstacle ‡gauche
 positionObstacle = OBSTACLE_A_GAUCHE;
 else if(robotState.distanceTelemetreCentre < 20) //Obstacle en face
 positionObstacle = OBSTACLE_EN_FACE;
@@ -174,7 +172,7 @@ else if(robotState.distanceTelemetreDroit > 30 &&
 robotState.distanceTelemetreCentre > 20 &&
 robotState.distanceTelemetreGauche > 30) //pas d?obstacle
 positionObstacle = PAS_D_OBSTACLE;
-//√©Dtermination de l√©?tat √†venir du robot
+//ÈDtermination de lÈ?tat ‡venir du robot
 if (positionObstacle == PAS_D_OBSTACLE)
 nextStateRobot = STATE_AVANCE;
 else if (positionObstacle == OBSTACLE_A_DROITE)
@@ -183,9 +181,8 @@ else if (positionObstacle == OBSTACLE_A_GAUCHE)
 nextStateRobot = STATE_TOURNE_DROITE;
 else if (positionObstacle == OBSTACLE_EN_FACE)
 nextStateRobot = STATE_TOURNE_SUR_PLACE_GAUCHE;
-//Si l?on n?est pas dans la transition de l√©?tape en cours
+//Si l?on n?est pas dans la transition de lÈ?tape en cours
 if (nextStateRobot != stateRobot - 1)
 stateRobot = nextStateRobot;
 }
-
 
