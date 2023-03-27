@@ -1,107 +1,98 @@
-# inclure  < xc.h >
-# inclure  " ADC.h "
-# inclure  " main.h "
+#include <xc.h>
+#include "ADC.h"
+#include "main.h"
 
 
- caractère non signé ADCResultIndex = 0 ;
- ADCResult int non signé  statique [ 5 ] ;
- caractère non signé ADCConversionFinishedFlag ;
+unsigned char ADCResultIndex = 0;
+static unsigned int ADCResult[5];
+unsigned char ADCConversionFinishedFlag;
 
-/* ************************************************ ****************************************************** */
+/****************************************************************************************************/
 // Configuration ADC
-/* ************************************************ ****************************************************** */
-annuler  InitADC1 ( annuler )
-{
-// cf. Manuel de référence ADC page 47
 
-// Configuration en mode 12 bits mono canal ADC avec conversions successives sur 4 entrées
-/* ************************************************ ********** */
-// AD1CON1
-/* ************************************************ ********** */
-AD1CON1bits. ADON = 0 ; // Module ADC OFF ? pendentif la config
-AD1CON1bits. AD12B = 1 ; // 0 : 10bits ? 1 : 12bits
-AD1CON1bits. FORME = 0b00 ; // 00 = Entier (DOUT = 0000 dddd dddd dddd)
-AD1CON1bits. ASAM = 0 ; // 0 = L'échantillonnage commence lorsque le bit SAMP est défini
-AD1CON1bits. SSRC = 0b111 ; // 111 = Le compteur interne termine l'échantillonnage et démarre la conversion (conversion automatique)
+/****************************************************************************************************/
+void InitADC1(void) {
+    //cf. ADC Reference Manual page 47
 
-/* ************************************************ ********** */
-// AD1CON2
-/* ************************************************ ********** */
-AD1CON2bits. VCFG = 0b000 ; // 000 : Référence Tension = AVDD AVss
-AD1CON2bits. CSCNA = 1 ; // 1 : Activer le balayage des chaînes
-AD1CON2bits. CHPS = 0b00 ; // Convertit CH0 uniquement
-AD1CON2bits. SMPI = 4 ; // n+1 conversions successives avant interruption
-AD1CON2bits. ALTS = 0 ;
-AD1CON2bits. BUFM = 0 ;
-/* ************************************************ ********** */
-// AD1CON3
-/* ************************************************ ********** */
-AD1CON3bits. ADRC = 0 ; // L'horloge ADC est dérivée de l'horloge système
-AD1CON3bits. ADCS = 15 ; // Horloge de conversion ADC TAD = TCY * (ADCS + 1)
-AD1CON3bits. SAMC = 15 ; // Temps d'échantillonnage automatique
+    //Configuration en mode 12 bits mono canal ADC avec conversions successives sur 4 entr�es
+    /************************************************************/
+    //AD1CON1
+    /************************************************************/
+    AD1CON1bits.ADON = 0; // ADC module OFF ? pendant la config
+    AD1CON1bits.AD12B = 1; // 0 : 10bits ? 1 : 12bits
+    AD1CON1bits.FORM = 0b00; // 00 = Integer (DOUT = 0000 dddd dddd dddd)
+    AD1CON1bits.ASAM = 0; // 0 = Sampling begins when SAMP bit is set
+    AD1CON1bits.SSRC = 0b111; // 111 = Internal counter ends sampling and starts conversion (auto-convert)
 
-/* ************************************************ ********** */
-// AD1CON4
-/* ************************************************ ********** */
-AD1CON4bits. ADDMAEN = 0 ; // DMA n'est pas utilisé
+    /************************************************************/
+    //AD1CON2
+    /************************************************************/
+    AD1CON2bits.VCFG = 0b000; // 000 : Voltage Reference = AVDD AVss
+    AD1CON2bits.CSCNA = 1; // 1 : Enable Channel Scanning
+    AD1CON2bits.CHPS = 0b00; // Converts CH0 only
+    AD1CON2bits.SMPI = 4; // n+1 conversions successives avant interrupt
+    AD1CON2bits.ALTS = 0;
+    AD1CON2bits.BUFM = 0;
+    /************************************************************/
+    //AD1CON3
+    /************************************************************/
+    AD1CON3bits.ADRC = 0; // ADC Clock is derived from Systems Clock
+    AD1CON3bits.ADCS = 15; // ADC Conversion Clock TAD = TCY * (ADCS + 1)
+    AD1CON3bits.SAMC = 15; // Auto Sample Time
 
-/* ************************************************ ********** */
-// Configuration des ports
-/* ************************************************ ********** */
-// CAN utilisé : 16(G9)-11(C11)-6(C0)
-ANSELCbits. ANSC0 = 1 ;
-ANSELCbits. ANSC11 = 1 ;
-ANSELGbits. ANSG9 = 1 ;
-ANSELEbits. ANSE15 = 1 ;
-ANSELBbits. ANSB1 = 1 ;
+    /************************************************************/
+    //AD1CON4
+    /************************************************************/
+    AD1CON4bits.ADDMAEN = 0; // DMA is not used
 
-Bits AD1CSSL. CSS6 = 1 ; // Activer AN6 pour l'analyse
-Bits AD1CSSL. CSS11 = 1 ; // Activer AN11 pour l'analyse
-AD1CSSHbits. CSS16 = 1 ; // Activer AN16 pour l'analyse
-Bits AD1CSSL. CSS15 = 1 ; // 
-Bits AD1CSSL. CSS3 = 1 ; // 
+    /************************************************************/
+    //Configuration des ports
+    /************************************************************/
+    //ADC utilis�s : 3(B1)-16(G9)-11(C11)-6(C0)-15(E15)
+    ANSELBbits.ANSB1 = 1; //droit-Ex
+    ANSELCbits.ANSC0 = 1; //droit
+    ANSELCbits.ANSC11 = 1; //centre
+    ANSELGbits.ANSG9 = 1; //gauche
+    ANSELEbits.ANSE15 = 1; //gauche-Ex
 
-/* Attribuer les entrées MUXA */
-AD1CHS0bits. CH0SA = 0 ; // Bits CH0SA ignorés pour la sélection d'entrée CH0 +ve
-AD1CHS0bits. CH0NA = 0 ; // Sélectionnez VREF- pour l'entrée CH0 -ve
+    AD1CSSLbits.CSS3 = 1; // Enable AN1 for scan
+    AD1CSSLbits.CSS6 = 1; // Enable AN6 for scan
+    AD1CSSLbits.CSS11 = 1; // Enable AN11 for scan
+    AD1CSSLbits.CSS15 = 1; 
+    AD1CSSHbits.CSS16 = 1; // Enable AN16 for scan
+    
+    /* Assign MUXA inputs */
+    AD1CHS0bits.CH0SA = 0; // CH0SA bits ignored for CH0 +ve input selection
+    AD1CHS0bits.CH0NA = 0; // Select VREF- for CH0 -ve inpu
 
-IFS0bits. AD1IF = 0 ; // Efface le bit d'indicateur d'interruption A/D
-IEC0bits. AD1IE = 1 ; // Activer l'interruption A/D
-AD1CON1bits. ADON = 1 ; // Activer le convertisseur A/N
+    IFS0bits.AD1IF = 0; // Clear the A/D interrupt flag bit
+    IEC0bits.AD1IE = 1; // Enable A/D interrupt
+    AD1CON1bits.ADON = 1; // Turn on the A/D converter
 }
 
-/* C'est la routine d'interruption ADC */
-void  __attribute__ ((interruption, no_auto_psv)) _AD1Interrupt( void )
-{
-IFS0bits. AD1IF = 0 ;
-ADCResult[ 0 ] = ADC1BUF0 ; // Lit le résultat de la conversion de l'entrée AN-scan 1
-ADCResult[ 1 ] = ADC1BUF1 ; // Lire le résultat de la conversion AN3
-ADCResult[ 2 ] = ADC1BUF2 ; // Lire le résultat de la conversion AN5
-ADCResult[ 3 ] = ADC1BUF3 ; // Lire le résultat de la conversion AN3
-ADCResult[ 4 ] = ADC1BUF4 ; // Lire le résultat de la conversion AN5
-ADCConversionFinishedFlag = 1 ;
+/* This is ADC interrupt routine */
+void __attribute__((interrupt, no_auto_psv)) _AD1Interrupt(void) {
+    IFS0bits.AD1IF = 0;
+    ADCResult[0] = ADC1BUF0; // Read the AN-scan input 1 conversion result
+    ADCResult[1] = ADC1BUF1; // Read the AN3 conversion result
+    ADCResult[2] = ADC1BUF2; // Read the AN5 conversion result
+    ADCResult[3] = ADC1BUF3;
+    ADCResult[4] = ADC1BUF4;
+    ADCConversionFinishedFlag = 1;
 }
 
-annuler  ADC1StartConversionSequence ()
-{
-AD1CON1bits. SAMP = 1 ; // Lance une acquisition ADC
+void ADC1StartConversionSequence() {
+    AD1CON1bits.SAMP = 1; //Lance une acquisition ADC
 }
 
- entier non signé * ADCGetResult ( void )
-{
-renvoie ADCResult ;
+unsigned int * ADCGetResult(void) {
+    return ADCResult;
 }
 
- caractère  non signé ADCIsConversionFinished ( void )
-{
-renvoie ADCConversionFinishedFlag ;
+unsigned char ADCIsConversionFinished(void) {
+    return ADCConversionFinishedFlag;
 }
 
-annuler  ADCClearConversionFinishedFlag ( annuler )
-{
-ADCConversionFinishedFlag = 0 ;
+void ADCClearConversionFinishedFlag(void) {
+    ADCConversionFinishedFlag = 0;
 }
-
-
-
-

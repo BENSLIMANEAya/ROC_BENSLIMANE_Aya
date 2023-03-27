@@ -9,7 +9,6 @@ unsigned char toggle = 0;
 //Initialisation d?un timer 32 bits
 unsigned long timestamp;
 
-
 void InitTimer23(void) {
     T3CONbits.TON = 0; // Stop any 16-bit Timer3 operation
     T2CONbits.TON = 0; // Stop any 16/32-bit Timer3 operation
@@ -31,17 +30,17 @@ void InitTimer23(void) {
 
 void __attribute__((interrupt, no_auto_psv)) _T3Interrupt(void) {
     IFS0bits.T3IF = 0; // Clear Timer3 Interrupt Flag
-/*
-    if (toggle == 0) {
-        PWMSetSpeedConsigne(20, MOTEUR_DROIT);
-        PWMSetSpeedConsigne(20, MOTEUR_GAUCHE);
-        toggle = 1;
-    } else {
-        PWMSetSpeedConsigne(-20, MOTEUR_DROIT);
-        PWMSetSpeedConsigne(-20, MOTEUR_GAUCHE);
-        toggle = 0;
-    }
-*/
+    /*
+        if (toggle == 0) {
+            PWMSetSpeedConsigne(20, MOTEUR_DROIT);
+            PWMSetSpeedConsigne(20, MOTEUR_GAUCHE);
+            toggle = 1;
+        } else {
+            PWMSetSpeedConsigne(-20, MOTEUR_DROIT);
+            PWMSetSpeedConsigne(-20, MOTEUR_GAUCHE);
+            toggle = 0;
+        }
+     */
 }
 
 //Initialisation d?un timer 16 bits
@@ -56,7 +55,7 @@ void InitTimer1(void) {
     //00 = 1:1 prescale value
     T1CONbits.TCS = 0; //clock source = internal clock
     //PR1 = 40000000 / 64 / 50;
-    SetFreqTimer1(2.5);
+    SetFreqTimer1(250);
     IFS0bits.T1IF = 0; // Clear Timer Interrupt Flag
     IEC0bits.T1IE = 1; // Enable Timer interrupt
     T1CONbits.TON = 1; // Enable Timer
@@ -72,7 +71,7 @@ void InitTimer4(void) {
     //00 = 1:1 prescale value
     T4CONbits.TCS = 0; //clock source = internal clock
     //PR1 = 40000000 / 64 / 50;
-    SetFreqTimer4(1000.0);
+    SetFreqTimer4(1000);
     IFS1bits.T4IF = 0; // Clear Timer Interrupt Flag
     IEC1bits.T4IE = 1; // Enable Timer interrupt
     T4CONbits.TON = 1; // Enable Timer
@@ -82,69 +81,55 @@ void InitTimer4(void) {
 
 void __attribute__((interrupt, no_auto_psv)) _T1Interrupt(void) {
     IFS0bits.T1IF = 0;
-  // LED_BLANCHE = !LED_BLANCHE;
-   //PWMUpdateSpeed();   
-   //ADC1StartConversionSequence();
+    //LED_BLANCHE = !LED_BLANCHE;
+    //PWMUpdateSpeed();   
+    //ADC1StartConversionSequence();
 
 }
 
 void __attribute__((interrupt, no_auto_psv)) _T4Interrupt(void) {
     IFS1bits.T4IF = 0;
-   //LED_BLEUE = !LED_BLEUE;
-   timestamp +=1;
-   ADC1StartConversionSequence();
-   PWMUpdateSpeed(); 
-   OperatingSystemLoop();
-   
-   
+    //LED_BLEUE = !LED_BLEUE;
+    timestamp += 1;
+    ADC1StartConversionSequence();
+    PWMUpdateSpeed();
+    OperatingSystemLoop();
+
+
 
 
 }
 
-void SetFreqTimer1(float freq)
-{
-T1CONbits.TCKPS = 0b00; //00 = 1:1 prescaler value
-if(FCY /freq > 65535)
-{
-T1CONbits.TCKPS = 0b01; //01 = 1:8 prescaler value
-if(FCY /freq / 8 > 65535)
-{
-T1CONbits.TCKPS = 0b10; //10 = 1:64 prescaler value
-if(FCY /freq / 64 > 65535)
-{
-T1CONbits.TCKPS = 0b11; //11 = 1:256 prescaler value
-PR1 = (int)(FCY / freq / 256);
-}
-else
-PR1 = (int)(FCY / freq / 64);
-}
-else
-PR1 = (int)(FCY / freq / 8);
-}
-else
-PR1 = (int)(FCY / freq);
+void SetFreqTimer1(float freq) {
+    T1CONbits.TCKPS = 0b00; //00 = 1:1 prescaler value
+    if (FCY / freq > 65535) {
+        T1CONbits.TCKPS = 0b01; //01 = 1:8 prescaler value
+        if (FCY / freq / 8 > 65535) {
+            T1CONbits.TCKPS = 0b10; //10 = 1:64 prescaler value
+            if (FCY / freq / 64 > 65535) {
+                T1CONbits.TCKPS = 0b11; //11 = 1:256 prescaler value
+                PR1 = (int) (FCY / freq / 256);
+            } else
+                PR1 = (int) (FCY / freq / 64);
+        } else
+            PR1 = (int) (FCY / freq / 8);
+    } else
+        PR1 = (int) (FCY / freq);
 }
 
-void SetFreqTimer4(float freq)
-{
-T4CONbits.TCKPS = 0b00; //00 = 1:1 prescaler value
-if(FCY /freq > 65535)
-{
-T4CONbits.TCKPS = 0b01; //01 = 1:8 prescaler value
-if(FCY /freq / 8 > 65535)
-{
-T4CONbits.TCKPS = 0b10; //10 = 1:64 prescaler value
-if(FCY /freq / 64 > 65535)
-{
-T4CONbits.TCKPS = 0b11; //11 = 1:256 prescaler value
-PR1 = (int)(FCY / freq / 256);
-}
-else
-PR1 = (int)(FCY / freq / 64);
-}
-else
-PR1 = (int)(FCY / freq / 8);
-}
-else
-PR1 = (int)(FCY / freq);
+void SetFreqTimer4(float freq) {
+    T4CONbits.TCKPS = 0b00; //00 = 1:1 prescaler value
+    if (FCY / freq > 65535) {
+        T4CONbits.TCKPS = 0b01; //01 = 1:8 prescaler value
+        if (FCY / freq / 8 > 65535) {
+            T4CONbits.TCKPS = 0b10; //10 = 1:64 prescaler value
+            if (FCY / freq / 64 > 65535) {
+                T4CONbits.TCKPS = 0b11; //11 = 1:256 prescaler value
+                PR4 = (int) (FCY / freq / 256);
+            } else
+                PR4 = (int) (FCY / freq / 64);
+        } else
+            PR4 = (int) (FCY / freq / 8);
+    } else
+        PR4 = (int) (FCY / freq);
 }
