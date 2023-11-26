@@ -70,8 +70,8 @@ static void TacheADC_taskFxn(UArg a0, UArg a1)
         Sampling(CONFIG_ADC_0);
         Sampling(CONFIG_ADC_1);
         Sampling(CONFIG_ADC_2);
-        afficherDonnees(vccx, vccy, vccz);
-        SaveDataToSend(vccx, vccy, vccz);
+        afficherDonnees(accx, accy, accz);
+        SaveDataToSend(accx, accy, accz);
         Carte_enqueueMsg(PZ_MSG_ACCELEROMETRE, NULL);
         
         //turn_off_LEDS();
