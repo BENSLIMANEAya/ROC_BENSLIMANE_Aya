@@ -13,29 +13,39 @@
 #include <ti/drivers/GPIO.h>
 #include <ti/drivers/ADC.h>
 
+#include <TacheLCD/TacheLCD.h>
+#include "Profiles/Accelerometre.h"
+
+
 #define ADC_SAMPLE_COUNT (10)
+#define TACHEADC_TASK_PRIORITY 1
+#define TACHEADC_TASK_STACK_SIZE 1024
+
 uint16_t adcValue0;
 uint32_t adcValue0MicroVolt;
 uint16_t adcValue1[ADC_SAMPLE_COUNT];
 uint32_t adcValue1MicroVolt[ADC_SAMPLE_COUNT];
 
-#define TACHEADC_TASK_PRIORITY 1
-#define TACHEADC_TASK_STACK_SIZE 1024
 Task_Struct TacheADC;
 uint8_t TacheADCStack[TACHEADC_TASK_STACK_SIZE];
 Semaphore_Struct semTacheADCStruct;
 Semaphore_Handle semTacheADCHandle;
-static Clock_Struct myClock;
-extern void TacheADC_init(void);
-void Sampling(uint_least8_t Board_ADC_Number);
-void myClockSwiFxn(uintptr_t arg0)
-{
-    Semaphore_post(semTacheADCHandle);
-}
 uint16_t i;
 ADC_Handle adc;
 ADC_Params params;
 int_fast16_t res;
+
+
+
+
+static Clock_Struct myClock;
+float vccx, vccy, vccz;
+
+void myClockSwiFxn(uintptr_t arg0)
+{
+    Semaphore_post(semTacheADCHandle);
+}
+
 
 void turn_on_LEDS(void)
 {
@@ -47,21 +57,6 @@ void turn_on_LEDS(void)
      GPIO_write(LED_1,0);
      //GPIO_write(LED_2,0);
  }
-void Sampling(uint_least8_t Board_ADC_Number){
-    adc = ADC_open(Board_ADC_Number, &params);
-    if (adc == NULL){
-        while (1);
-    }
-    for (i = 0; i < ADC_SAMPLE_COUNT; i++){
-        res = ADC_convert(adc, &adcValue1[i]);
-        if (res == ADC_STATUS_SUCCESS){
-            adcValue1MicroVolt[i] =
-                    ADC_convertRawToMicroVolts(adc,adcValue1[i]);
-        }
-    }
-    ADC_close(adc);
-}
-
 
 static void TacheADC_taskFxn(UArg a0, UArg a1)
 {
@@ -69,40 +64,23 @@ static void TacheADC_taskFxn(UArg a0, UArg a1)
 
     for(;;)
     {
-        turn_on_LEDS();
+        //turn_on_LEDS();
         //Le semaphore est poste par le timer myClock
         Semaphore_pend(semTacheADCHandle, BIOS_WAIT_FOREVER);
         Sampling(CONFIG_ADC_0);
         Sampling(CONFIG_ADC_1);
         Sampling(CONFIG_ADC_2);
-        turn_off_LEDS();
+        afficherDonnees(vccx, vccy, vccz);
+        SaveDataToSend(vccx, vccy, vccz);
+        Carte_enqueueMsg(PZ_MSG_ACCELEROMETRE, NULL);
+        
+        //turn_off_LEDS();
 
     }
 
 
 }
 
-
-
-void TacheADC_CreateTask(void){
-    Semaphore_Params semParams;
-    Task_Params taskParams;
-    /* Configuration de la tache*/
-    Task_Params_init(&taskParams);
-    taskParams.stack = TacheADCStack;
-    taskParams.stackSize = TACHEADC_TASK_STACK_SIZE;
-    taskParams.priority = TACHEADC_TASK_PRIORITY;
-    /* Creation de la tache*/
-    Task_construct(&TacheADC, TacheADC_taskFxn,
-                   &taskParams, NULL);
-    /* Construire un objet semaphorepour etre utilise comme outil de verrouillage, comptage initial 0 */
-    Semaphore_Params_init(&semParams);
-    Semaphore_construct(&semTacheADCStruct,0, &semParams);
-/* Obtenir la gestion de l'instance */
-    semTacheADCHandle =
-            Semaphore_handle(&semTacheADCStruct);
-
-}
 
 
 
@@ -128,6 +106,61 @@ extern void TacheADC_init(void){
 
 }
 
+void Sampling(uint_least8_t Board_ADC_Number){
+    adc = ADC_open(Board_ADC_Number, &params);
+    if (adc == NULL){
+        while (1);
+    }
+    for (i = 0; i < ADC_SAMPLE_COUNT; i++){
+        res = ADC_convert(adc, &adcValue1[i]);
+        if (res == ADC_STATUS_SUCCESS){
+             {
+               if (Board_ADC_Number == CONFIG_ADC_0)
+               {
+                  adcValue1MicroVolt[i] =
+                  ADC_convertRawToMicroVolts(adc, adcValue1[i]);
+                  vccx = adcValue1MicroVolt[i]/1000000.0;
+                }
+                if (Board_ADC_Number == CONFIG_ADC_1)
+                {
+                   adcValue1MicroVolt[i] =
+                   ADC_convertRawToMicroVolts(adc, adcValue1[i]);
+                   vccy = adcValue1MicroVolt[i]/1000000.0;
+                }
+                if (Board_ADC_Number == CONFIG_ADC_2)
+                {
+                     adcValue1MicroVolt[i] =
+                     ADC_convertRawToMicroVolts(adc, adcValue1[i]);
+                     vccz = adcValue1MicroVolt[i]/1000000.0;
+                }
+        }
+    }
+    ADC_close(adc);
+}
+
+
+
+
+
+void TacheADC_CreateTask(void){
+    Semaphore_Params semParams;
+    Task_Params taskParams;
+    /* Configuration de la tache*/
+    Task_Params_init(&taskParams);
+    taskParams.stack = TacheADCStack;
+    taskParams.stackSize = TACHEADC_TASK_STACK_SIZE;
+    taskParams.priority = TACHEADC_TASK_PRIORITY;
+    /* Creation de la tache*/
+    Task_construct(&TacheADC, TacheADC_taskFxn,
+                   &taskParams, NULL);
+    /* Construire un objet semaphorepour etre utilise comme outil de verrouillage, comptage initial 0 */
+    Semaphore_Params_init(&semParams);
+    Semaphore_construct(&semTacheADCStruct,0, &semParams);
+/* Obtenir la gestion de l'instance */
+    semTacheADCHandle =
+            Semaphore_handle(&semTacheADCStruct);
+
+}
 
 
 
