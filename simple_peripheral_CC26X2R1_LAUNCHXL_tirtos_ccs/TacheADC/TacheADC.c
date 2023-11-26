@@ -119,19 +119,19 @@ void Sampling(uint_least8_t Board_ADC_Number){
                {
                   adcValue1MicroVolt[i] =
                   ADC_convertRawToMicroVolts(adc, adcValue1[i]);
-                  vccx = adcValue1MicroVolt[i]/1000000.0;
+                  accx = adcValue1MicroVolt[i]/1000000.0;
                 }
                 if (Board_ADC_Number == CONFIG_ADC_1)
                 {
                    adcValue1MicroVolt[i] =
                    ADC_convertRawToMicroVolts(adc, adcValue1[i]);
-                   vccy = adcValue1MicroVolt[i]/1000000.0;
+                   accy = adcValue1MicroVolt[i]/1000000.0;
                 }
                 if (Board_ADC_Number == CONFIG_ADC_2)
                 {
                      adcValue1MicroVolt[i] =
                      ADC_convertRawToMicroVolts(adc, adcValue1[i]);
-                     vccz = adcValue1MicroVolt[i]/1000000.0;
+                     accz = adcValue1MicroVolt[i]/1000000.0;
                 }
         }
     }
